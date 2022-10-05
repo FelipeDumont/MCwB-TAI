@@ -9,7 +9,7 @@ void Capture_Params(int argc, char** argv){
   mode = argv[1];
   InstanceFile = argv[2];
   Seed = atoi(argv[3]);
-
+  useOverFill = atoi(argv[4]) == 1;
 }
 
 // Try yo found ":="" then continue reading
@@ -105,16 +105,21 @@ vector<vector<int>> Check_Group_Line(string groupLine, bool debug = false){
     
     // last element 
     string last = line.substr(prevValue);
-    if(last.length() > 0){
-      
-      if(last == "."){
-        last = "0";        
+    // cout << "last ? [" << last << "]"  << endl;
+    // cout << last.length() << " " << last[0] << endl;
+    // cout << int(last[0]) << endl;
+    if ( int(last[0]) != 13){
+      if(last.length() > 0){
+        
+        if(last == "."){
+          last = "0";        
+        }
+        currentData.push_back(stoi(last));
+        if(debug) cout << last;
       }
-      currentData.push_back(stoi(last));
-      if(debug) cout << last;
+      groupData.push_back(currentData);
+      if(debug) cout << endl;
     }
-    groupData.push_back(currentData);
-    if(debug) cout << endl;
     prevLine = posLine + 1;
   }
   return groupData;
@@ -329,6 +334,55 @@ bool Read_Instance_old(){
 
 }
 
+void Preprocess(){
+  // rC
+  vector<float> multiplier;
+  multiplier.push_back(1);
+  multiplier.push_back(0);
+  multiplier.push_back(0);
+
+  for(int id = 0; id < 3; id++){
+    vector<vector<float>> costs;
+    
+    float currentMilkMultiplier = aValue;
+    if(id == 1){
+      multiplier[0] = 0.99;
+      multiplier[1] = 1;
+      currentMilkMultiplier = bValue;
+    }
+    if(id == 2){
+      multiplier[0] = 0.98;
+      multiplier[1] = 0.99;
+      multiplier[1] = 1;
+      currentMilkMultiplier = cValue;
+    }
+    for(long unsigned int i = 0; i< c.size(); i++){
+      vector<float> cost;
+      // cout << i << ": [";
+      for(long unsigned int j = 0; j< c[i].size(); j++){
+        // int travelCost = (int)c[0][sNodes[i]];
+        
+        if (i == j || j == 0) {
+          cost.push_back(-1);
+        }
+        else{
+          vector<int> nodeData = quIds[j];
+          float currentMilk = qu[nodeData[0]][nodeData[1]+1];
+          float delta = (currentMilk * currentMilkMultiplier - c[i][j]);
+          delta = delta * multiplier[nodeData[0]];
+          // cout << c[i][j] << "(" << delta  << ")" << " ";
+          cost.push_back(c[i][j]);
+        }
+      }
+      // cout << "]" << endl;
+      costs.push_back(cost);
+      // cout << "First ?" << endl;
+    }
+    rC.push_back(costs);
+  }
+  // cout << "END" << endl;
+}
+
 void PrintInstanceData(){
   // Q, Qname
   cout << "Vehicules"<< endl;
@@ -346,6 +400,11 @@ void PrintInstanceData(){
     for(long unsigned int j = 0; j< qu[i].size(); j+=2){
       cout << (i+1) << " n:" << qu[i][j+0] << " p:" << qu[i][j+1] << endl;
     }
+  }
+  // qids
+  cout << "quIds"<< endl;
+  for(long unsigned int i = 1; i< quIds.size(); i+=1){    
+    cout << (i) << " n:" << quIds[i][0] << endl;
   }
   // c
   cout << "Connections"<< endl;

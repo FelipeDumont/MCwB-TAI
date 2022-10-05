@@ -15,10 +15,13 @@ void Capture_Params(int argc, char** argv);
 bool Read_Instance();
 bool Read_Instance_old();
 void PrintInstanceData();
+void Preprocess();
 
 int int_rand (int a, int b);
 float float_rand (float a, float b);
 
+extern bool useOverFill;
+extern int offset;
 // Values Main
 extern char* mode;
 extern char* InstanceFile;
@@ -35,6 +38,9 @@ extern vector< vector<float>> c;
 
 // Vector that holds the current position vectors
 extern vector<vector<int>> positions;
+
+// preprocess
+extern vector<vector <vector<float>>> rC;
 
 // Result
 #endif /* INITIALIZE_H_ */

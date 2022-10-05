@@ -11,6 +11,8 @@ using namespace std;
 void Greedy();
 void PrintSolution();
 
+extern bool useOverFill;
+
 // Values Main
 extern char* mode;
 extern char* InstanceFile;
@@ -27,5 +29,9 @@ extern vector< vector<float>> qu;
 extern vector< vector<float>> c;
 
 extern vector<vector<int>> solution;
+extern vector<int> vehicleType;
+
+// preprocess
+extern vector<vector <vector<float>>> rC;
 
 #endif /* GREEDY_H_ */

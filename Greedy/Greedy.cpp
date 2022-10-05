@@ -21,7 +21,7 @@ int GetCurrentSearch(vector<bool> flags){
     return int_rand(0,3);
 }
 
-int GetNodeQuantity(int id){
+int GetNodeMilkQuantity(int id){
     // cout << id << quIds.size() << endl;
     vector<int> nodeData = quIds[id - offset]; // type and position
     // cout << id << " " << nodeData[0] << " "<< nodeData[1]<< " "  << qu[nodeData[0]][nodeData[1]] << " Q" << qu[nodeData[0]][nodeData[1]+1]<< endl;
@@ -38,122 +38,162 @@ int GetNodeQuantity(int id){
     return 0;
 }
 
-void Greedy(){
-    // cout << "Greedy" << qu[0].size() << endl;
-    vector<int> selectableNodes;
-    for(long unsigned int i = 0; i< qu[0].size(); i+=2){
-        selectableNodes.push_back(qu[0][i]);
-        // cout << "Add selectable node: "<< qu[0][i] << endl;
+bool IsProfitable(vector<int> sNodes){
+    bool thereIsANode = false;
+    for(long unsigned int i = 0; i< sNodes.size(); i++){
+        int currentMilkQuantity = (int)GetNodeMilkQuantity(sNodes[i]);
+        int travelCost = (int)c[0][sNodes[i]];
+        if (currentMilkQuantity - travelCost > 0){
+            thereIsANode = true;
+            break;
+        }
     }
-    int carQuantity = (int)Q.size();
+    return thereIsANode;
+}
+
+bool AllQuotaDelivered(vector<bool> endingFlags){
+    for(long unsigned int i = 0; i< 3; i++){
+        if(endingFlags[i] == false)
+            return false;
+    }
+    return true;
+}
+
+int GetCurrentQuota(vector<bool> endingFlags){
+    for(long unsigned int i = 0; i< 3; i++){
+        if(endingFlags[i] == false)
+            return i;
+    }
+    return -1;
+}
+
+// selectableNodes, currentNode, vSize - currentMilkQuantity , currentQuotaID
+// return node id or -1
+int FindBestNodeID(vector<int> selectableNodes, int currentNode, int currentQuotaID){
+    int min = -9999999;
+    int selectedNode = -1;
+    for(long unsigned int i = 0; i< selectableNodes.size(); i++){
+        vector<int> nodeData = quIds[selectableNodes[i] - offset];
+        // float currentMilk = qu[nodeData[0]][nodeData[1]+1];
+        // If its the best of the ones that can be set with the current aviable size
+        // cout << "size:" << rC[currentQuotaID].size() << endl;
+        // cout << "D: " << rC[currentQuotaID][currentNode][selectableNodes[i]] << " min" << min << " cm" << currentMilk << endl;
+        if(rC[currentQuotaID][currentNode][selectableNodes[i]] > min){
+            selectedNode =  i;//selectableNodes[i];
+            min = rC[currentQuotaID][currentNode][selectableNodes[i]];
+        }
+    }
+    return selectedNode;
+}
+
+void Greedy(){
+    // ADDING A TYPE NODES
+    // cout << "Greedy" << endl;
+    vector<int> selectableNodes;
+    for(long unsigned int j = 0; j< qu[0].size(); j+=2){
+        selectableNodes.push_back(qu[0][j]);
+        // cout << "Add selectable node C: "<< qu[0][j] << endl;
+    }
+
     int carCounter = 0;
-    int typeCount = 0;
-    int totalAddedMilk = 0;
     vector<bool> endingFlags;
+    vector<int> currentFilledQuota;
     vector<int> sol;
     
+    // ALL QUOTAS NOT FILLED
     for(long unsigned int i = 0; i< 3; i++){
         endingFlags.push_back(false);
+        currentFilledQuota.push_back(0);
     }
     
-    while (carCounter < carQuantity) { // All  vehicules used!
-        // size of Vehicule 0,1,2 ...
-        // cout << "fill car " << carCounter << endl;
+    // Obtain the solution with just the delivered quota !, -1 ending flag
+    int currentQuotaID = GetCurrentQuota(endingFlags);
+    while(currentQuotaID != -1){
+
+        // Check car size
+        int carQuantity = (int)Q.size();
+        // Current vehicle size
         int vSize = (int)Q[carCounter];
-        // cout << "vSize:"<< vSize << endl;
-        bool flagCanSelect = true; // if i cant add more
-        int currentlyAddedMilkQuantity = 0;
-        int currentCarElementCounter = 0;
-        while(flagCanSelect && selectableNodes.size() > 0){
-            // cout << "filling car at id " << currentCarElementCounter << endl;
-            int bestNode = 0;
-            int nodeToRemove = 0;
-            int bestGain = 0;
-            int milkQuantity = 0;
-            bool selectedOne = false;
-            for(long unsigned int i = 0; i< selectableNodes.size(); i++){
-                // Select node, and continue
-                int travelCost = 0;
-                // cout << i << " sn:" << selectableNodes[i] << endl;
-                int currentMilkQuantity = (int)GetNodeQuantity(selectableNodes[i]);
-                // cout << "can fit " << currentlyAddedMilkQuantity + currentMilkQuantity <<"/" << vSize << endl;
-                if(currentlyAddedMilkQuantity + currentMilkQuantity > vSize){ // Check the ones that fit
-                    currentMilkQuantity = 0;
-                    continue;
-                }
-                else{
-                    selectedOne = true;
-                }
-                if(currentCarElementCounter == 0){
-                    travelCost = (int)c[0][selectableNodes[i]];
-                }
-                else{
-                    travelCost = (int)c[selectableNodes[i-1]][selectableNodes[i]];
-                }
-                int currentGain = currentMilkQuantity - travelCost;
-                if(currentGain > bestGain){
-                    milkQuantity = currentMilkQuantity;
-                    nodeToRemove = i;
-                    bestNode = selectableNodes[i];
-                    bestGain = currentGain;
-                }
-            }
-            if(selectedOne && bestNode != 0){
-                currentlyAddedMilkQuantity += milkQuantity;
-                // cout << "current Milk " << currentlyAddedMilkQuantity << " erase at " << nodeToRemove << "  " << bestNode << endl;
-                selectableNodes.erase(selectableNodes.begin() + nodeToRemove);
+        bool carFullorFinishedQuota = false;
+        int currentNode = 0;
+        int currentMilkQuantity = 0;
+        vehicleType.push_back(currentQuotaID);
+        while(carFullorFinishedQuota == false){
+            // Select Node
+            // Remove node from poll
+            // Add Node to current Vehicle solution
+            // cout << "V" << carCounter << " N:" << currentNode << " A:" << (vSize - currentMilkQuantity) << " Q:" << currentQuotaID << " sn" << selectableNodes.size() << endl;
+            int selectedNodeID = FindBestNodeID(selectableNodes, currentNode , currentQuotaID);
+            if (selectedNodeID >= 0){
+                int bestNode = selectableNodes[selectedNodeID];
+                int nodeMilkQuantity = (int)GetNodeMilkQuantity(bestNode);
+                selectableNodes.erase(selectableNodes.begin() + selectedNodeID);
                 sol.push_back(bestNode);
+                currentMilkQuantity += nodeMilkQuantity;
+                currentFilledQuota[currentQuotaID] += nodeMilkQuantity;
+                currentNode = bestNode;
+                // cout << "current quota" << currentFilledQuota[currentQuotaID]  << "|" << bestNode << ":" << nodeMilkQuantity << endl;
             }
-            if(bestNode == 0){
-                selectedOne = false;
+            if (vSize - currentMilkQuantity <= 0){
+                // Car is full !!!
+                carFullorFinishedQuota = true;
             }
-            flagCanSelect = selectedOne;
-            currentCarElementCounter++;
-        }
-        totalAddedMilk += currentlyAddedMilkQuantity;
-        // Check the current milk production with the Vehicule ready
-        if(typeCount == 0 && endingFlags[0] == false){
-            // cout << currentlyAddedMilkQuantity << endl;
-            if(totalAddedMilk >= P[0]){
-                // cout << totalAddedMilk << "A"<<endl;
-                typeCount++;
-                endingFlags[0] = true;
-                currentlyAddedMilkQuantity = 0;
-                totalAddedMilk = 0;
-                for(long unsigned int i = 0; i< qu[1].size(); i+=2){
-                    selectableNodes.push_back(qu[1][i]);
-                    // cout << "Add selectable node B: "<< qu[1][i] << endl;
+            // cout << "A"<< endl;
+            // cout << P[currentQuotaID] << "|" << currentFilledQuota[currentQuotaID]  << "(" << currentMilkQuantity<< ")"<< endl;
+            // Check if quota is filled !
+            if(currentFilledQuota[currentQuotaID] >= P[currentQuotaID] || selectableNodes.size() == 0){
+                // Current quota filled !!!
+                carFullorFinishedQuota = true;
+                endingFlags[currentQuotaID] = true;
+                // Check current quota
+                currentQuotaID = GetCurrentQuota(endingFlags);
+                // Add new node options !
+                if(currentQuotaID != -1){
+                    for(long unsigned int j = 0; j< qu[currentQuotaID].size(); j+=2){
+                        selectableNodes.push_back(qu[currentQuotaID][j]);
+                        // cout << "Add selectable node C: "<< qu[currentQuotaID][j] << endl;
+                        // cout << "cqi" << currentQuotaID << endl;
+                    }
                 }
             }
         }
-        if(typeCount == 1 && endingFlags[1] == false){
-            if(totalAddedMilk >= P[1]){
-                // cout << totalAddedMilk << "B"<<endl;
-                typeCount++;
-                endingFlags[1] = true;
-                currentlyAddedMilkQuantity = 0;
-                totalAddedMilk = 0;
-                for(long unsigned int i = 0; i< qu[2].size(); i+=2){
-                    selectableNodes.push_back(qu[2][i]);
-                    // cout << "Add selectable node C: "<< qu[2][i] << endl;
-                }
-            }
-        }
-        if(typeCount == 2 && endingFlags[2] == false){
-            if(totalAddedMilk >= P[2]){
-                // cout << totalAddedMilk << "C"<<endl;
-                typeCount++;
-                endingFlags[2] = true;
-                currentlyAddedMilkQuantity = 0;
-                totalAddedMilk = 0;
-            }
-        }
+        // cout << "END"<< endl;
+        // Add to the solution
         solution.push_back(sol);
         vector<int> aux;
         sol = aux;
-        carCounter++;
+        // Next car
+        carCounter += 1;
+        if (carQuantity <= carCounter)
+            break;
+    }    
+    if(useOverFill){
+        // cout << "OVER FILL" << selectableNodes.size() << endl;
+        // Once all the quota is filled, we add even more !
+        for(long unsigned int i = 0; i < selectableNodes.size(); i++){
+            // cout << "check node " << selectableNodes[i] << endl;
+            vector<int> nodeData = quIds[selectableNodes[i] -offset];
+            int nodeType = nodeData[0];
+            int bestDelta = -99999;
+            int vehicleSelected = -1;
+            for(int j = nodeType; j < 3; j++){
+                for (long unsigned int k = 0; k < vehicleType.size(); k++){
+                    if(vehicleType[k] == j) {
+                        //
+                        int lastNode = solution[k].back();
+                        if(rC[nodeType][lastNode][selectableNodes[i]] > bestDelta){
+                            vehicleSelected =  k;//selectableNodes[i];
+                            bestDelta = rC[nodeType][lastNode][selectableNodes[i]];
+                        }
+                    }
+                }
+            }
+            if(vehicleSelected != -1){
+                // cout << i << endl;
+                solution[vehicleSelected].push_back(selectableNodes[i]);
+            }
+        }
     }
-    
 }
 
 void PrintSolution(){
@@ -170,6 +210,7 @@ void PrintSolution(){
         int finalType = 0;
         int currentMilk = 0;
         for(long unsigned int j = 0; j < solution[i].size(); j++){
+            // cout << i << " " << j << endl;
             if(j == 0){
                 travelCost += (int)c[0][solution[i][j]];
             }
@@ -200,14 +241,20 @@ void PrintSolution(){
             currentMilkB += currentMilk;
         if(finalType == 2)
             currentMilkC += currentMilk;
-    }
+    }    
     milkGain = (int)(currentMilkA * aValue + currentMilkB *bValue + currentMilkC *cValue);
     finalGain = milkGain - travelCost;
     cout << finalGain << " " << travelCost << " " << milkGain << endl;
+    cout << "MA:" << currentMilkA << " MB:" << currentMilkB << " MC:" << currentMilkC << endl;
     for(long unsigned int i = 0; i < solution.size(); i++){
-        cout << solution[i][0];
-        for(long unsigned int j = 1; j < solution[i].size(); j++){
-            cout << "-"<< solution[i][j];
+        if (solution[i].size() > 0){
+            cout << solution[i][0];
+            for(long unsigned int j = 1; j < solution[i].size(); j++){
+                cout << "-"<< solution[i][j];
+            }
+        }
+        else{
+            cout << "Un feseable";
         }
         cout << endl;
     }

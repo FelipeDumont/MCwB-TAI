@@ -1,18 +1,27 @@
-Readme for Topics in artificial intelligence, Proyect task 1.
+Readme for Topics in artificial intelligence, Project task 1.
 
 This folder should contain the next 4 folders:
 
 * Greedy
-* Instancias
-* Instancias Other
+* Instancias, instances that use the euclidean distance between nodes
+* InstanciasO, instances that set the movement matrix in the file
+* InstanciasNoBlending, instances that does not have blending assign, and only one type of milk
+* ProblemFiles, Some of the instances that have an "ascii 13" at the end of the files
 * Later
 
-The corresponding folder should be set up with the "Greedy" for the compilation of the code we will use the make and make clean if necesary, the excecution of the make will generate a Greedy excecutable.
+The corresponding folder should be set up with the "Greedy" for the compilation of the code we will use and make clean if necessary, the execution of the make will generate a Greedy executable.
 
 To execute Greedy, we will use the next examples
-// ./Greedy new "../Instancias Other/5clusters.dat.1" 548792
-// ./Greedy old "../Instancias/eil22.txt" 548792
+// ./Greedy new "../Instancias Other/5clusters.dat.1" 548792 1
+// ./Greedy old "../Instancias/eil22.txt" 548792 1
 
-The first argument indicates the type of file used, since the structures for the MCwB has more than 1 type of file, we divide them with the first element, the next element indicates the file to be used, all the files in "instancias" are old files, the last input is the seed to be used by the algorithm.
+The first argument indicates the type of file used, since the structures for the MCwB has more than 1 type of file, we divide them with the first element,
+the next element indicates the file to be used, all the files in "instancias" are old files,
+the next argument is the seed to be used by the algorithm.
+And the last element is if we will use the overfill of the vehicles for the unfeasible solution
 
-The excecution of the examples will give the results in the format used for this problem, but with the solution obtained by a simple greedy algorithm
+The execution of the examples will give the results in the format used for this problem, but with the solution obtained by a simple greedy algorithm
+The Analisis.bash will create a file latexTable.txt, that will contain the results of the execution and the corresponding solutions and scores
+
+It is important to acknowledge that the solutions of the greedy are unfeasible solutions, so the score is only representative of the solution obtained
+
