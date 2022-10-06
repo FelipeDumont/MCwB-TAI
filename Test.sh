@@ -22,22 +22,30 @@ nIns=0
 ins=()
 insIds=()
 
-cd $instanceFolder
-for x in *; do
-  ins[$nIns]="old $instanceFolder/$x"
-  insIds[$nIns]=$x
-  nIns=$(($nIns+1))
-done
-cd ..
-:'
-cd $instanceFolder2
-for x in *; do
-  ins[$nIns]="new $instanceFolder2/$x"
-  insIds[$nIns]=$x
-  nIns=$(($nIns+1))
-done
-cd ..
-'
+# input for the bash will be
+# $1 : number of subprocesses, default 1 -> $subP
+# $2 : make clean, default false
+
+if(( $3 == 0 )); then
+  cd $instanceFolder
+  for x in *; do
+    ins[$nIns]="old $instanceFolder/$x"
+    insIds[$nIns]=$x
+    nIns=$(($nIns+1))
+  done
+  cd ..
+fi
+
+if(( $3 != 0 )); then
+  cd $instanceFolder2
+  for x in *; do
+    ins[$nIns]="new $instanceFolder2/$x"
+    insIds[$nIns]=$x
+    nIns=$(($nIns+1))
+  done
+  cd ..
+fi
+
 #cd $instanceFolderO
 #for x in *.*; do
 #  ins[$nIns]="$instanceFolderO/$x"
@@ -87,9 +95,7 @@ function readAndOrganize(){
     echo "${results[si]}" >> $3
   done
 }
-# input for the bash will be
-# $1 : number of subprocesses, default 1 -> $subP
-# $2 : make clean, default false
+
 subP=1
 if ! [ -z $1 ]; then
   # echo "set $1"

@@ -29,6 +29,7 @@ for line in insFile:
   folders.append(line)
 for line in resultFile:
   line = line.strip().split(" ")
+  # print("Line: " + line[0])
   rresult[line[0]] = line[1]
 
 for x in folders:
@@ -54,10 +55,11 @@ for x in folders:
   #Instance0 & item 12 & item 13 \\  
   # \hline
   Kresult = -1
-  id = x[:-4]
+  id = x
+  # print(x)
+  instanceName = x.replace(".txt","")
   Kresult = rresult[id]
-  
-  newL = "\\verb|{}|  \t & {} \t & {} \t & {} \\\\ \\hline \n ".format(x, Kresult, result[x][0], result[x][1])
+  newL = "\\verb|{}|  \t & {} \t & {} \t & {} \\\\ \\hline \n ".format(instanceName, Kresult, result[x][0], result[x][1])
   finalFile.write(newL)
   
 	

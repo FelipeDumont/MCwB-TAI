@@ -366,12 +366,12 @@ void Preprocess(){
           cost.push_back(-1);
         }
         else{
-          vector<int> nodeData = quIds[j];
+          vector<int> nodeData = quIds[j-offset];
           float currentMilk = qu[nodeData[0]][nodeData[1]+1];
           float delta = (currentMilk * currentMilkMultiplier - c[i][j]);
           delta = delta * multiplier[nodeData[0]];
-          // cout << c[i][j] << "(" << delta  << ")" << " ";
-          cost.push_back(c[i][j]);
+          // cout << "(" << delta  << ")" << " ";
+          cost.push_back(delta);
         }
       }
       // cout << "]" << endl;

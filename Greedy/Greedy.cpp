@@ -79,6 +79,7 @@ int FindBestNodeID(vector<int> selectableNodes, int currentNode, int currentQuot
         // cout << "size:" << rC[currentQuotaID].size() << endl;
         // cout << "D: " << rC[currentQuotaID][currentNode][selectableNodes[i]] << " min" << min << " cm" << currentMilk << endl;
         if(rC[currentQuotaID][currentNode][selectableNodes[i]] > min){
+            // cout << selectableNodes[i] << ": " << rC[currentQuotaID][currentNode][selectableNodes[i]]  << endl;
             selectedNode =  i;//selectableNodes[i];
             min = rC[currentQuotaID][currentNode][selectableNodes[i]];
         }
@@ -179,7 +180,6 @@ void Greedy(){
             for(int j = nodeType; j < 3; j++){
                 for (long unsigned int k = 0; k < vehicleType.size(); k++){
                     if(vehicleType[k] == j) {
-                        //
                         int lastNode = solution[k].back();
                         if(rC[nodeType][lastNode][selectableNodes[i]] > bestDelta){
                             vehicleSelected =  k;//selectableNodes[i];
@@ -231,6 +231,7 @@ void PrintSolution(){
             if(nodeData[0] == 2){
                 finalType = 2;
             }
+            // from the last farm to the factory
             if(j == solution[i].size() -1){
                 travelCost += (int)c[solution[i][j]][0];
             }

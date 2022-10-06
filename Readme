@@ -20,6 +20,13 @@ the next element indicates the file to be used, all the files in "instancias" ar
 the next argument is the seed to be used by the algorithm.
 And the last element is if we will use the overfill of the vehicles for the unfeasible solution
 
+To use the bash, we will use the next line as example
+bash Test.sh 1 true 1
+
+the first argument is the number of subprocesses, default 1, the second is make clean (true), default false, finally the last digit correspond to the instances the 
+program will use, 0 mean old instances (little ones without distance matrix) and 1 means other instances (the ones with distance matrix)
+the params file contains for now 0 or 1, that indicates if the solution is not or is overfilled
+
 The execution of the examples will give the results in the format used for this problem, but with the solution obtained by a simple greedy algorithm
 The Analisis.bash will create a file latexTable.txt, that will contain the results of the execution and the corresponding solutions and scores
 
