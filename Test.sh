@@ -1,11 +1,14 @@
 #!/bin/bash
 
+# example call
+# bash Test.sh 5 true 0
+
 # Constants
 mainFolder="Results"
-programFolder="Greedy"
-instanceFolder="Instancias"
-instanceFolder2="InstanciasO"
-finalFile="Greedy"
+programFolder="GA"
+instanceFolder="InstancesDePrueba"
+instanceFolder2="InstanciasReales"
+finalFile="GA"
 paramFile="params.txt"
 seedsFile="seeds.txt"
 tempTime="tempTime"
@@ -29,7 +32,7 @@ insIds=()
 if(( $3 == 0 )); then
   cd $instanceFolder
   for x in *; do
-    ins[$nIns]="old $instanceFolder/$x"
+    ins[$nIns]="new $instanceFolder/$x"
     insIds[$nIns]=$x
     nIns=$(($nIns+1))
   done
@@ -82,6 +85,7 @@ function createIfNotExist()
 
 function readAndOrganize(){
   results=()
+  # echo "read and org"
   while read line; do
     arrLine=(${line//;/ })
     data=${arrLine[1]}
@@ -119,7 +123,7 @@ createIfNotExist $mainFolder
 
 
 for (( cparam=0; cparam <$nparam; cparam++));do
-  # echo ${params[$cparam]}
+  echo ${params[$cparam]}
   for (( cins=0; cins <nIns; cins++));do
     createIfNotExist "$mainFolder/${insIds[$cins]}"
     result=()
@@ -136,13 +140,14 @@ for (( cparam=0; cparam <$nparam; cparam++));do
         rt=$( echo "$(date +%s.%N)-$now" | bc -l) &&
         echo "$si;$rt">>$tempTime &&
         echo $si";"$result>>$tempTest
+        # echo "FINISHED ${ins[$cins]}" ${seeds[$si]} ${params[$cparam]}
       ) &
     done
     wait # wait for the rest of subprocesses
-    
     readAndOrganize $nseed "$tempTime" "$mainFolder/${insIds[$cins]}/$tempTime"
     readAndOrganize $nseed "$tempTest" "$mainFolder/${insIds[$cins]}/$tempTest"
-    
+    # echo "Reorganized ---"
+    #break;
     rm "$tempTime"
     rm "$tempTest"
     rtComplete=$( echo "$(date +%s.%N)-$nowComplete" | bc -l)

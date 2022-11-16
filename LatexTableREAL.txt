@@ -1,0 +1,8 @@
+\hline 
+\verb|5clusters.dat.1|  	 & 5018 	 & 4890 	 & 4572 	 & 37 \\ \hline 
+ \verb|5clusters.dat.2|  	 & 3884 	 & 3698 	 & 3487 	 & 39 \\ \hline 
+ \verb|5clusters.dat.3|  	 & 3578 	 & 3407 	 & 3209 	 & 40 \\ \hline 
+ \verb|5clusters.dat.4|  	 & 1307 	 & 1247 	 & 1238 	 & 14 \\ \hline 
+ \verb|5clusters.dat.5|  	 & 3019 	 & 2906 	 & 2798 	 & 28 \\ \hline 
+ \verb|ALL.dat.1|  	 & 17637 	 & 15875 	 & 15087 	 & 172 \\ \hline 
+ 
