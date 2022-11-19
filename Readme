@@ -2,33 +2,31 @@ Readme for Topics in artificial intelligence, Project task 1.
 
 This folder should contain the next 4 folders:
 
-* Greedy
-* Instancias, instances that use the euclidean distance between nodes
-* InstanciasO, instances that set the movement matrix in the file
-* InstanciasNoBlending, instances that does not have blending assign, and only one type of milk
-* ProblemFiles, Some of the instances that have an "ascii 13" at the end of the files
-* Later
+* GA
+* InstancesDePrueba
+* InstanciasReales
+* InstanciasReales0, real instances with 0 as requirement
+* Results, Last run results
+* ResultsReal, Last run Real results
+* ResultsTest, Last run Test results
 
-The corresponding folder should be set up with the "Greedy" for the compilation of the code we will use and make clean if necessary, the execution of the make will generate a Greedy executable.
+The corresponding folder should be set up with the "GA" for the compilation of the code we will use and make clean if necessary, the execution of the make will generate a Greedy executable.
 
-To execute Greedy, we will use the next examples
-// ./Greedy new "../Instancias Other/5clusters.dat.1" 548792 1
-// ./Greedy old "../Instancias/eil22.txt" 548792 1
+To execute GA, we will use the next examples
+// ./GA new ../InstancesDePrueba/instancia4.mcsb 548792 100000 6
+// ./GA new ../InstanciasReales/5clusters.dat.4 548792 100000 6
 
 The first argument indicates the type of file used, since the structures for the MCwB has more than 1 type of file, we divide them with the first element,
-the next element indicates the file to be used, all the files in "instancias" are old files,
-the next argument is the seed to be used by the algorithm.
-And the last element is if we will use the overfill of the vehicles for the unfeasible solution
+the next element indicates the file to be used, all the files in are considered "new",
+the next argument is the seed to be used by the algorithm, with the number of generations and followed by population size.
 
-To use the bash, we will use the next line as example
-bash Test.sh 1 true 1
+To use the bash, we will use the next line as example, to run the real case scenario
+bash Test.sh 1 true 1 100000 6
 
 the first argument is the number of subprocesses, default 1, the second is make clean (true), default false, finally the last digit correspond to the instances the 
 program will use, 0 mean old instances (little ones without distance matrix) and 1 means other instances (the ones with distance matrix)
-the params file contains for now 0 or 1, that indicates if the solution is not or is overfilled
+the params file contains for now 0 or 1, the last two arguments are as follows: number of generations and population size.
 
-The execution of the examples will give the results in the format used for this problem, but with the solution obtained by a simple greedy algorithm
+The execution of the examples will give the results in the format used for this problem, but with the solution obtained by a GA algorithm
 The Analisis.bash will create a file latexTable.txt, that will contain the results of the execution and the corresponding solutions and scores
-
-It is important to acknowledge that the solutions of the greedy are unfeasible solutions, so the score is only representative of the solution obtained
 
