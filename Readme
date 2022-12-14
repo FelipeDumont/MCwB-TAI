@@ -2,7 +2,7 @@ Readme for Topics in artificial intelligence, Project task 1.
 
 This folder should contain the next 4 folders:
 
-* GA
+* EA
 * InstancesDePrueba
 * InstanciasReales
 * InstanciasReales0, real instances with 0 as requirement
@@ -13,19 +13,19 @@ This folder should contain the next 4 folders:
 The corresponding folder should be set up with the "GA" for the compilation of the code we will use and make clean if necessary, the execution of the make will generate a Greedy executable.
 
 To execute GA, we will use the next examples
-// ./GA new ../InstancesDePrueba/instancia4.mcsb 548792 100000 6
-// ./GA new ../InstanciasReales/5clusters.dat.4 548792 100000 6
+// ./EA new ../InstancesDePrueba/instancia4.mcsb 548792 100000 548792 10 1 20 7 0.6 0.8 $9 0.6 0.07
+// ./EA new ../InstanciasReales/5clusters.dat.4 548792 100000 548792 10 1 20 7 0.6 0.8 $9 0.6 0.07
 
-The first argument indicates the type of file used, since the structures for the MCwB has more than 1 type of file, we divide them with the first element,
+The first argument indicates the type of file used, since the structures for the MCPwSB has more than 1 type of file, we divide them with the first element,
 the next element indicates the file to be used, all the files in are considered "new",
 the next argument is the seed to be used by the algorithm, with the number of generations and followed by population size.
 
 To use the bash, we will use the next line as example, to run the real case scenario
-bash Test.sh 1 true 1 100000 6
+bash Test.sh 1 true 1
 
 the first argument is the number of subprocesses, default 1, the second is make clean (true), default false, finally the last digit correspond to the instances the 
 program will use, 0 mean old instances (little ones without distance matrix) and 1 means other instances (the ones with distance matrix)
-the params file contains for now 0 or 1, the last two arguments are as follows: number of generations and population size.
+the params file contains for now 0 or 1, this bash will use the parameters file as the parameters for the algorithm runs.
 
 The execution of the examples will give the results in the format used for this problem, but with the solution obtained by a GA algorithm
 The Analisis.bash will create a file latexTable.txt, that will contain the results of the execution and the corresponding solutions and scores

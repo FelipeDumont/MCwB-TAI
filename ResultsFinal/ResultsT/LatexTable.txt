@@ -1,0 +1,8 @@
+\hline 
+\verb|instancia1.mcsb|  	 & 750 	 & 750 	 & 721 	 & 68 \\ \hline 
+ \verb|instancia2.mcsb|  	 & 969 	 & 959 	 & 942 	 & 44 \\ \hline 
+ \verb|instancia3.mcsb|  	 & 1254 	 & 1163 	 & 1159 	 & 50 \\ \hline 
+ \verb|instancia4.mcsb|  	 & 1311 	 & 1310 	 & 1198 	 & 56 \\ \hline 
+ \verb|instancia5.mcsb|  	 & 1241 	 & 1240 	 & 1174 	 & 51 \\ \hline 
+ \verb|instancia6.mcsb|  	 & 604 	 & 604 	 & 536 	 & 55 \\ \hline 
+ 

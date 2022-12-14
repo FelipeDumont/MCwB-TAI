@@ -5,10 +5,10 @@
 
 # Constants
 mainFolder="Results"
-programFolder="GA"
+programFolder="EA"
 instanceFolder="InstancesDePrueba"
 instanceFolder2="InstanciasReales"
-finalFile="GA"
+finalFile="EA"
 paramFile="params.txt"
 seedsFile="seeds.txt"
 tempTime="tempTime"
@@ -134,7 +134,7 @@ for (( cparam=0; cparam <$nparam; cparam++));do
         wait -n
       fi
       ( 
-        echo "${ins[$cins]}" ${seeds[$si]} ${params[$cparam]}
+        echo "${ins[$cins]}" ${seeds[$si]} ${params[$cparam]} &&
         now=$(date +%s.%N) &&
        	result=$(./$programFolder/$finalFile ${ins[$cins]} ${seeds[$si]} ${params[$cparam]}) &&
         rt=$( echo "$(date +%s.%N)-$now" | bc -l) &&
